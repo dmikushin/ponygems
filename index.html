@@ -1,4 +1,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+	display:block;
+}
+
+body {
+	margin:0;
+}
+</style>
 <script>
 function makeGame()
 {
@@ -10,6 +19,8 @@ var gameMap =
 	canvas : document.createElement("canvas"),
 
 	img : document.createElement("img"),
+
+	npoints : 0,
 
 	make : function()
 	{
@@ -34,6 +45,23 @@ var gameMap =
 			gameMap.canvas.height = window.innerHeight;
 
 			gameMap.redraw();
+		}
+
+		this.canvas.onclick = function(e)
+		{
+			var rect = gameMap.canvas.getBoundingClientRect();
+
+			gameMap.ctx.beginPath();
+			gameMap.ctx.fillStyle = "white";
+			gameMap.ctx.strokeStyle = "red";
+			r = 10;
+			gameMap.ctx.arc(e.clientX - rect.left, e.clientY - rect.top, r, 0, 2 * Math.PI);
+			gameMap.ctx.fill();
+			gameMap.ctx.stroke();
+
+			console.log(gameMap.npoints + ": (" + (e.clientX - rect.left) + ", " +
+				(e.clientY - rect.top) + ")");
+			gameMap.npoints++;
 		}
 	},
 

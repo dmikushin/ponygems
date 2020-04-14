@@ -1,0 +1,53 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script>
+function makeGame()
+{
+	gameMap.make();
+}
+
+var gameMap =
+{
+	canvas : document.createElement("canvas"),
+
+	img : document.createElement("img"),
+
+	make : function()
+	{
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+
+		this.ctx = this.canvas.getContext("2d");
+		var game = document.getElementById("game");
+		game.append(this.canvas);
+
+		this.img.src = "map.jpg";
+		var gameMap = this;
+		this.img.onload = function()
+		{
+			gameMap.redraw();
+		}
+
+		// Resize the canvas to fill browser window dynamically
+		window.onresize = function()
+		{
+			gameMap.canvas.width = window.innerWidth;
+			gameMap.canvas.height = window.innerHeight;
+
+			gameMap.redraw();
+		}
+	},
+
+	redraw : function()
+	{
+		this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
+	},
+
+	clear : function()
+	{
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+}
+</script>
+<body onload="makeGame()">
+<div id="game"></div>
+</body>

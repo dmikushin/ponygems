@@ -1,107 +1,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
 canvas {
-	display:block;
+        display:block;
 }
 
 body {
-	margin:0;
+        margin:0;
 }
 </style>
+<script type="text/javascript" src="ThirdParty/dice3d/ThirdParty/pre3d/pre3d.js" charset="UTF-8"></script>
+<script type="text/javascript" src="ThirdParty/dice3d/ThirdParty/pre3d/pre3d_path_utils.js" charset="UTF-8"></script>
+<script type="text/javascript" src="ThirdParty/dice3d/ThirdParty/pre3d/pre3d_shape_utils.js" charset="UTF-8"></script>
+<script type="text/javascript" src="ThirdParty/dice3d/ThirdParty/magicant/sjavascript/mt.js" charset="UTF-8"></script>
+<script type="text/javascript" src="ThirdParty/dice3d/dice3d.js" charset="UTF-8"></script>
 <script>
 function makeGame()
 {
-	gameMap.make();
+	var canvas = document.createElement("canvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        var game = document.getElementById("game");
+        game.append(canvas);
+
+	gameMap.make(canvas);
+	diceTable.make(canvas);
+
+	// Resize the canvas to fill browser window dynamically
+	window.onresize = function()
+	{
+		canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+        	gameMap.redraw();
+	        diceTable.redraw();
+	}
 }
 
 var gameMap =
 {
-	0: (506, 363)
-index.html:62 1: (528, 358)
-index.html:62 2: (549, 350)
-index.html:62 3: (541, 323)
-index.html:62 4: (512, 310)
-index.html:62 5: (470, 284)
-index.html:62 6: (409, 260)
-index.html:62 7: (345, 260)
-index.html:62 8: (309, 337)
-index.html:62 9: (268, 413)
-index.html:62 10: (251, 555)
-index.html:62 11: (251, 477)
-index.html:62 12: (189, 418)
-index.html:62 13: (217, 519)
-index.html:62 14: (184, 339)
-index.html:62 15: (202, 242)
-index.html:62 16: (251, 111)
-index.html:62 17: (220, 176)
-index.html:62 18: (303, 45)
-index.html:62 19: (348, 65)
-index.html:62 20: (383, 78)
-index.html:62 21: (383, 78)
-index.html:62 22: (429, 69)
-index.html:62 23: (480, 59)
-index.html:62 24: (530, 34)
-index.html:62 25: (579, 2)
-index.html:62 26: (603, 34)
-index.html:62 27: (603, 34)
-index.html:62 28: (623, 65)
-index.html:62 29: (636, 112)
-index.html:62 30: (640, 158)
-index.html:62 31: (684, 172)
-index.html:62 32: (733, 196)
-index.html:62 33: (768, 229)
-index.html:62 34: (789, 274)
-index.html:62 35: (804, 285)
-index.html:62 36: (846, 333)
-index.html:62 37: (871, 381)
-index.html:62 38: (873, 457)
-index.html:62 39: (898, 534)
-index.html:62 40: (865, 585)
-index.html:62 41: (837, 618)
-index.html:62 42: (868, 653)
-index.html:62 43: (279, 332)
-index.html:62 44: (247, 328)
-index.html:62 45: (210, 327)
-index.html:62 46: (423, 83)
-index.html:62 47: (422, 122)
-index.html:62 48: (409, 179)
-index.html:62 49: (406, 217)
-index.html:62 50: (833, 256)
-index.html:62 51: (864, 235)
-index.html:62 52: (907, 252)
-index.html:62 53: (875, 285)
+	coords :
+	[
+		{ x: 506, y: 363 },
+		{ x: 528, y: 358 },
+		{ x: 549, y: 350 },
+		{ x: 541, y: 323 },
+		{ x: 512, y: 310 },
+		{ x: 470, y: 284 },
+		{ x: 409, y: 260 },
+		{ x: 345, y: 260 },
+		{ x: 309, y: 337 },
+		{ x: 268, y: 413 },
+		{ x: 251, y: 555 },
+		{ x: 251, y: 477 },
+		{ x: 189, y: 418 },
+		{ x: 217, y: 519 },
+		{ x: 184, y: 339 },
+		{ x: 202, y: 242 },
+		{ x: 251, y: 111 },
+		{ x: 220, y: 176 },
+		{ x: 303, y: 45 },
+		{ x: 348, y: 65 },
+		{ x: 383, y: 78 },
+		{ x: 383, y: 78 },
+		{ x: 429, y: 69 },
+		{ x: 480, y: 59 },
+		{ x: 530, y: 34 },
+		{ x: 579, y: 2 },
+		{ x: 603, y: 34 },
+		{ x: 603, y: 34 },
+		{ x: 623, y: 65 },
+		{ x: 636, y: 112 },
+		{ x: 640, y: 158 },
+		{ x: 684, y: 172 },
+		{ x: 733, y: 196 },
+		{ x: 768, y: 229 },
+		{ x: 789, y: 274 },
+		{ x: 804, y: 285 },
+		{ x: 846, y: 333 },
+		{ x: 871, y: 381 },
+		{ x: 873, y: 457 },
+		{ x: 898, y: 534 },
+		{ x: 865, y: 585 },
+		{ x: 837, y: 618 },
+		{ x: 868, y: 653 },
+		{ x: 279, y: 332 },
+		{ x: 247, y: 328 },
+		{ x: 210, y: 327 },
+		{ x: 423, y: 83 },
+		{ x: 422, y: 122 },
+		{ x: 409, y: 179 },
+		{ x: 406, y: 217 },
+		{ x: 833, y: 256 },
+		{ x: 864, y: 235 },
+		{ x: 907, y: 252 },
+		{ x: 875, y: 285 }
+	],
 
-	canvas : document.createElement("canvas"),
-
+	coordsDisplay : { x: 1440, y: 718 },
+	
 	img : document.createElement("img"),
 
 	npoints : 0,
 
-	make : function()
+	make : function(canvas, ctx)
 	{
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
-
-		this.ctx = this.canvas.getContext("2d");
-		var game = document.getElementById("game");
-		game.append(this.canvas);
+		this.canvas = canvas;
+		this.ctx = canvas.getContext("2d");
 
 		this.img.src = "map.jpg";
-		var gameMap = this;
 		this.img.onload = function()
 		{
 			gameMap.redraw();
 		}
 
-		// Resize the canvas to fill browser window dynamically
-		window.onresize = function()
-		{
-			gameMap.canvas.width = window.innerWidth;
-			gameMap.canvas.height = window.innerHeight;
-
-			gameMap.redraw();
-		}
-
+		/*
+		// Define plotter that could be used to create new movement maps.
 		this.canvas.onclick = function(e)
 		{
 			var rect = gameMap.canvas.getBoundingClientRect();
@@ -118,18 +132,84 @@ index.html:62 53: (875, 285)
 				(e.clientY - rect.top) + ")");
 			gameMap.npoints++;
 		}
+		*/
 	},
 
 	redraw : function()
 	{
-		this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
-	},
+		gameMap.ctx.drawImage(gameMap.img, 0, 0, gameMap.canvas.width, gameMap.canvas.height);
 
-	clear : function()
-	{
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		// Display coords.
+		for (var i = 0; i < this.coords.length; i++)
+		{
+			var coord = this.coords[i];
+
+			gameMap.ctx.beginPath();
+                        gameMap.ctx.fillStyle = "white";
+                        gameMap.ctx.strokeStyle = "red";
+                        r = 10;
+			var x = coord.x / this.coordsDisplay.x * gameMap.canvas.width;
+			var y = coord.y / this.coordsDisplay.y * gameMap.canvas.height; 
+                        gameMap.ctx.arc(x, y, r, 0, 2 * Math.PI);
+                        gameMap.ctx.fill();
+                        gameMap.ctx.stroke();
+		};
 	}
 }
+
+var diceTable =
+{
+	mt : new MersenneTwister(),
+
+        make : function(canvas, ctx)
+        {
+		this.canvas = canvas;
+		this.ctx = canvas.getContext("2d");
+		this.value = this.mt.nextInt(1, 6);
+
+                this.dice3d = new midice3d.Dice(canvas, 0.9 /* scaling */);
+                this.dice3d.camFocLen = 0.7;
+                this.dice3d.init();
+
+                // Mersenne Twister random generator.
+                var mt = new MersenneTwister();
+
+                var img = document.createElement("img");
+                img.src = "ThirdParty/dice3d/wood3.jpg";
+                img.onload = function()
+                {
+                        // TODO diceTable.ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+
+                canvas.addEventListener("click", function()
+                {
+                        var i = 0, n = mt.nextInt(3, 7);
+                        var animation = window.setInterval(function()
+                        {
+                                diceTable.value = mt.nextInt(1, 6);
+				var valueSideFront = 0;
+				var valueSide = (i == n) ? valueSideFront : mt.nextInt(0, 1);
+                                var coord = { x: 2, y: 1 };
+                                var clearCanvas = false;
+                        	diceTable.dice3d.draw(valueSide, diceTable.value, coord.x, coord.y, clearCanvas);
+                                i++;
+                                if (i > n)
+				{
+                                        window.clearInterval(animation);
+				}
+                        }, 250);
+                });
+        },
+
+        redraw : function()
+        {
+		var valueSideFront = 0;
+                var valueSideBack = 1;
+                var coord = { x: 2, y: 1 };
+                var clearCanvas = false;
+                diceTable.dice3d.draw(valueSideFront, diceTable.value, coord.x, coord.y, clearCanvas);
+	}
+};
 </script>
 <body onload="makeGame()">
 <div id="game"></div>

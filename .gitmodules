@@ -1,0 +1,3 @@
+[submodule "ThirdParty/dice3d"]
+	path = ThirdParty/dice3d
+	url = https://github.com/dmikushin/dice3d.git

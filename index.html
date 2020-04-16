@@ -178,10 +178,6 @@ var diceTable =
 		this.ctx = canvas.getContext("2d");
 		this.value = this.mt.nextInt(1, 6);
 
-		this.dice3d = new midice3d.Dice(canvas, 0.9 /* scaling */);
-		this.dice3d.camFocLen = 0.7;
-		this.dice3d.init();
-
 		this.img.src = "ThirdParty/dice3d/wood3.jpg";
 		this.img.onload = function()
 		{
@@ -206,6 +202,10 @@ var diceTable =
 			var i = 0, n = diceTable.mt.nextInt(3, 7);
 			var animation = window.setInterval(function()
 			{
+				diceTable.dice3d = new midice3d.Dice(diceTable.canvas, 0.7 /* scaling */);
+				diceTable.dice3d.camFocLen = 0.7;
+				diceTable.dice3d.init();
+
 				diceTable.value = diceTable.mt.nextInt(1, 6);
 				var valueSideFront = 0;
 				var valueSide = (i == n) ? valueSideFront : diceTable.mt.nextInt(0, 1);
@@ -269,6 +269,10 @@ var diceTable =
 
 		// Render masked img to the output context.
 		diceTable.ctx.putImageData(background, 0, 0);
+
+		diceTable.dice3d = new midice3d.Dice(diceTable.canvas, 0.7 /* scaling */);
+		diceTable.dice3d.camFocLen = 0.7;
+		diceTable.dice3d.init();
 
 		var valueSideFront = 0;
 		var valueSideBack = 1;

@@ -113,9 +113,11 @@ var gameMap =
 		{
 			gameMap.redraw();
 		}
+	},
 
-		/*
-		// Define plotter that could be used to create new movement maps.
+	// Define plotter that could be used to create new movement maps.
+	edit : function()
+	{
 		this.canvas.onclick = function(e)
 		{
 			var rect = gameMap.canvas.getBoundingClientRect();
@@ -132,13 +134,17 @@ var gameMap =
 				(e.clientY - rect.top) + ")");
 			gameMap.npoints++;
 		}
-		*/
 	},
 
 	redraw : function()
 	{
 		gameMap.ctx.drawImage(gameMap.img, 0, 0, gameMap.canvas.width, gameMap.canvas.height);
 
+		gameMap.plot();
+	},
+
+	plot : function()
+	{
 		// Display coords.
 		for (var i = 0; i < this.coords.length; i++)
 		{
@@ -159,7 +165,10 @@ var gameMap =
 
 var diceTable =
 {
+	// Mersenne Twister random generator.
 	mt : new MersenneTwister(),
+
+	img : document.createElement("img"),
 
         make : function(canvas, ctx)
         {
@@ -171,24 +180,20 @@ var diceTable =
                 this.dice3d.camFocLen = 0.7;
                 this.dice3d.init();
 
-                // Mersenne Twister random generator.
-                var mt = new MersenneTwister();
-
-                var img = document.createElement("img");
-                img.src = "ThirdParty/dice3d/wood3.jpg";
-                img.onload = function()
+                this.img.src = "ThirdParty/dice3d/wood3.jpg";
+                this.img.onload = function()
                 {
-                        // TODO diceTable.ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+			diceTable.redraw();
                 }
 
                 canvas.addEventListener("click", function()
                 {
-                        var i = 0, n = mt.nextInt(3, 7);
+                        var i = 0, n = diceTable.mt.nextInt(3, 7);
                         var animation = window.setInterval(function()
                         {
-                                diceTable.value = mt.nextInt(1, 6);
+                                diceTable.value = diceTable.mt.nextInt(1, 6);
 				var valueSideFront = 0;
-				var valueSide = (i == n) ? valueSideFront : mt.nextInt(0, 1);
+				var valueSide = (i == n) ? valueSideFront : diceTable.mt.nextInt(0, 1);
                                 var coord = { x: 2, y: 1 };
                                 var clearCanvas = false;
                         	diceTable.dice3d.draw(valueSide, diceTable.value, coord.x, coord.y, clearCanvas);
@@ -203,6 +208,36 @@ var diceTable =
 
         redraw : function()
         {
+		var canvas = document.createElement("canvas");
+		canvas.width = diceTable.canvas.width;
+		canvas.height = diceTable.canvas.height;
+		var ctx = canvas.getContext("2d");
+
+		// Create bw mask.
+		ctx.fillStyle = "black";
+                ctx.beginPath();
+                ctx.rect(0, 0, canvas.width, canvas.height);
+                ctx.fill();
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(canvas.width, canvas.height,
+                        Math.min(canvas.width, canvas.height) / 3,
+                        0, 2 * Math.PI);
+                ctx.fill();
+		var mask = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		var mask_data = mask.data;
+
+		// Load image and make masked pixels transparent.
+		ctx.drawImage(diceTable.img, 0, 0, canvas.width, canvas.height);
+		var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		var image_data = image.data;
+		for (var i = 0; i < mask_data.length; i += 4)
+			image_data[i + 3] = mask_data[i];
+		image.data = mask_data;
+
+		// Render masked img to the output context.
+		diceTable.ctx.putImageData(image, 0, 0);
+
 		var valueSideFront = 0;
                 var valueSideBack = 1;
                 var coord = { x: 2, y: 1 };

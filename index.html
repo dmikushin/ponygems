@@ -170,6 +170,8 @@ var diceTable =
 
 	img : document.createElement("img"),
 
+	cornerRadius : 0,
+
 	make : function(canvas, ctx)
 	{
 		this.canvas = canvas;
@@ -193,8 +195,8 @@ var diceTable =
 			var y = e.clientY - rect.top;
 
 			// Ensure click is in the visible table corner.
-			var r = Math.min(canvas.width, canvas.height) / 3;
-			if ((canvas.width - x) * (canvas.width - x) + (canvas.height - y) * (canvas.height - y) >= r * r)
+			if ((canvas.width - x) * (canvas.width - x) + (canvas.height - y) * (canvas.height - y) >= 
+				diceTable.cornerRadius * diceTable.cornerRadius)
 			{
 				console.log((canvas.width - x) * (canvas.width - x) + (canvas.height - y) * (canvas.height - y));
 				console.log(r * r);
@@ -207,7 +209,8 @@ var diceTable =
 				diceTable.value = diceTable.mt.nextInt(1, 6);
 				var valueSideFront = 0;
 				var valueSide = (i == n) ? valueSideFront : diceTable.mt.nextInt(0, 1);
-				var coord = { x: 2, y: 1 };
+				var box = diceTable.cornerRadius / Math.sqrt(2);
+				var coord = { x: (canvas.width - box) / 2, y: (canvas.height - box) / 2 };
 				var clearCanvas = false;
 				diceTable.dice3d.draw(valueSide, diceTable.value, coord.x, coord.y, clearCanvas);
 				i++;
@@ -221,6 +224,8 @@ var diceTable =
 
 	redraw : function()
 	{
+		diceTable.cornerRadius = Math.min(diceTable.canvas.width, diceTable.canvas.height) / 3;
+
 		var canvas = document.createElement("canvas");
 		canvas.width = diceTable.canvas.width;
 		canvas.height = diceTable.canvas.height;
@@ -233,8 +238,7 @@ var diceTable =
 		ctx.fill();
 		ctx.fillStyle = "rgba(1, 1, 1, 1)";
 		ctx.beginPath();
-		ctx.arc(canvas.width, canvas.height,
-			Math.min(canvas.width, canvas.height) / 3,
+		ctx.arc(canvas.width, canvas.height, diceTable.cornerRadius,
 			0, 2 * Math.PI);
 		ctx.fill();
 		var mask = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -245,8 +249,7 @@ var diceTable =
 		ctx.strokeStyle = "white";
 		ctx.beginPath();
 		ctx.lineWidth = 4;
-		ctx.arc(canvas.width, canvas.height,
-			Math.min(canvas.width, canvas.height) / 3,
+		ctx.arc(canvas.width, canvas.height, diceTable.cornerRadius,
 			0, 2 * Math.PI);
 		ctx.stroke();
 		var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -269,7 +272,8 @@ var diceTable =
 
 		var valueSideFront = 0;
 		var valueSideBack = 1;
-		var coord = { x: 2, y: 1 };
+		var box = diceTable.cornerRadius / Math.sqrt(2);
+		var coord = { x: (canvas.width - box) / 2, y: (canvas.height - box) / 2 };
 		var clearCanvas = false;
 		diceTable.dice3d.draw(valueSideFront, diceTable.value, coord.x, coord.y, clearCanvas);
 	}
